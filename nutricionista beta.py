@@ -100,8 +100,24 @@ class funcoes():
         self.cliente_primarykey = selecionado['values'][1]
 
     def inserir_vizualiza(self):
-        self.visualizar_db_nome['text'] = self.cliente_selecionado
-
+        self.conecta_bd()
+        self.pacientes_selecionado = self.cursor.execute("""SELECT * FROM clientes WHERE email = ?""",(self.cliente_primarykey,))
+        for row in self.pacientes_selecionado:
+            self.nome_paciente = row[0]
+            self.email_paciente = row[1]
+            self.telefone_paciente = row[2]
+            self.peso_paciente = row[3]
+            self.altura_paciente = row[4]
+            self.imc_paciente = row[5]
+            self.sexo_paciente = row[6]
+        self.visualizar_db_nome['text'] = self.nome_paciente
+        self.visualizar_db_email['text'] = self.email_paciente
+        self.visualizar_db_telefone['text'] = self.telefone_paciente
+        self.visualizar_db_peso['text'] = self.peso_paciente
+        self.visualizar_db_altura['text'] = self.altura_paciente
+        self.visualizar_db_imccliente['text'] ="%.2f" %self.imc_paciente
+        self.visualizar_db_sexo['text'] = self.sexo_paciente
+        
     def deletar_paciente(self):
         reply = messagebox.askyesno("Atenção!", "Você tem certeza que quer remover paciente?")
         if reply == True:
@@ -115,6 +131,22 @@ class funcoes():
             messagebox.showinfo("sucesso", self.msg_remover)
         else:
             pass
+
+    def lista_calorias_click(self, event):
+        selecionado = self.lista_alimentos.item(self.lista_alimentos.selection())
+        self.calorias_alimento_selecionado = int(selecionado['values'][1])
+
+    def calcula_calorias(self):
+        pass
+
+    def reseta_calorias(self):
+        pass
+
+    def editar_cliente(self):
+        pass
+    
+    def inserir_alimentos(self):
+        self.lista_alimentos.insert(parent='', index=0, values=('Batata','50'))
 
 ## FRONTEND ##       
 
@@ -243,6 +275,18 @@ class App(funcoes):
             self.visualizar_db_peso = Label(self.janela_cliente, text="")
             self.visualizar_db_sexo = Label(self.janela_cliente, text="")
             self.visualizar_button_remover = Button(self.janela_cliente, text="Remover Cliente", command=self.deletar_paciente)
+            self.lista_button_add = Button(self.janela_cliente, text='Adicionar Selecionado', command = self.calcula_calorias)
+            self.lista_alimentos = Treeview(self.janela_cliente, height = 10,column=("col1", "col2"))
+            self.lista_alimentos.heading("#0", text="")
+            self.lista_alimentos.heading("#1", text="Alimento")
+            self.lista_alimentos.heading("#2", text="Calorias")
+            self.lista_alimentos.column("#0", width=0, stretch=NO)
+            self.lista_alimentos.column("#1", width=100, anchor=W)
+            self.lista_alimentos.column("#2", width=100)
+            self.alimentos_scroll = Scrollbar(self.janela_cliente,orient="vertical")
+            self.lista_alimentos.configure(yscroll=self.alimentos_scroll.set)
+            self.lista_alimentos.bind("<ButtonRelease-1>", self.lista_calorias_click)
+
             #CADASTRO GRID
             self.visualizar_label_novo.place(x=10, y=10)
             self.visualizar_label_nome.place(x=10, y=50)
@@ -260,7 +304,11 @@ class App(funcoes):
             self.visualizar_db_peso.place(x=290, y=100)
             self.visualizar_db_sexo.place(x=75, y=200)
             self.visualizar_button_remover.place(x=250, y=250)
+            self.lista_button_add.place(x=530, y=150)
+            self.lista_alimentos.place(x=660,y=50)
+            self.alimentos_scroll.place(x=850,y=50, height = 225.5)
             self.inserir_vizualiza()
+            self.inserir_alimentos()
         else: 
             self.msg_remover = "Nem um cliente selecionado!"
             messagebox.showerror("Erro!", self.msg_remover)
