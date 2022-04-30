@@ -14,8 +14,13 @@ class funcoes():
             self.msg = "Informe os valores"
             messagebox.showerror("Erro!", self.msg)
         else:
-            self.peso=float(self.cadastro_entry_peso.get())
-            self.altura=float(self.cadastro_entry_altura.get())
+            self.peso=self.cadastro_entry_peso.get()
+            self.altura=self.cadastro_entry_altura.get()
+            self.peso = self.peso.replace(",", ".")
+            self.altura = self.altura.replace(",", ".")
+            self.peso = float(self.peso)
+            self.altura = float(self.altura)
+
             self.imc = self.peso/(self.altura*self.altura)
             if (self.imc<17):
                 self.cadastro_label_imccliente["text"]="%.2f" %self.imc + " (muito abaixo do peso)"
@@ -137,7 +142,10 @@ class funcoes():
         self.calorias_alimento_selecionado = int(selecionado['values'][1])
 
     def calcula_calorias(self):
-        pass
+        self.caloria_dieta = self.calorias_alimento_selecionado + self.caloria_dieta
+        self.visualizar_label_kcal['text'] = self.caloria_dieta
+        if self.caloria_dieta >= 2500:
+            self.visualizar_label_kcal['foreground']="red"
 
     def reseta_calorias(self):
         pass
@@ -146,7 +154,25 @@ class funcoes():
         pass
     
     def inserir_alimentos(self):
-        self.lista_alimentos.insert(parent='', index=0, values=('Batata','50'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Café(50ml)','33'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Suco natural(240ml)','100'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Creveja(350ml)','147'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Refrigerante(350ml)','189'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Coxa de frango(100g)','144'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Hamburguer(56g)','116'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Linguiça(60g)','190'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Ovo frito(1 un)','108'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Arroz branco(25g)','41'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Feijão(20g)','78'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Tomate(100g)','20'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Pão frances(50g)','135'))
+        self.lista_alimentos.insert(parent='', index=0, values=('Pizza(140g)','400'))
+
+
+
+
+        
+
 
 ## FRONTEND ##       
 
@@ -154,7 +180,6 @@ class App(funcoes):
     def __init__(self):
         self.root = root
         self.principal_config()
-        self.principal_widgets()
         self.monta_tabela()
         self.select_lista()
         self.cliente_selecionado = ""
@@ -165,8 +190,7 @@ class App(funcoes):
         self.root.geometry("625x350")
         self.root.resizable(False, False)
         self.root.configure()
-    
-    def principal_widgets(self):
+        
         self.label_clientes = Label(self.root, text="CLIENTES")
         self.botao_adicionar = Button(self.root, text="Adicionar Cliente", command=self.cadastro_config)
         self.botao_visualizar = Button(self.root, text="Vizualizar Cliente", command=self.pagina_cliente)
@@ -248,6 +272,7 @@ class App(funcoes):
         self.cadastro_drop_sexo.place(x=75, y=200)
     
     def pagina_cliente(self):
+        self.caloria_dieta = 0
         if self.cliente_selecionado != "":
             self.janela_cliente = Toplevel()
             self.janela_cliente.title('VIZUALIZAÇÃO PACIENTE')
@@ -267,6 +292,8 @@ class App(funcoes):
             self.visualizar_label_altura = Label(self.janela_cliente, text="Altura: ")
             self.visualizar_label_peso = Label(self.janela_cliente, text="Peso: ")
             self.visualizar_label_imc = Label(self.janela_cliente, text="IMC: ")
+            self.visualizar_label_kcal_text = Label(self.janela_cliente, text="Calorias(Kcal):")
+            self.visualizar_label_kcal = Label(self.janela_cliente, text="0", foreground="green")
             self.visualizar_db_imccliente = Label(self.janela_cliente, text="", foreground="black")
             self.visualizar_db_nome = Label(self.janela_cliente, text="")
             self.visualizar_db_email = Label(self.janela_cliente, text="")
@@ -279,10 +306,10 @@ class App(funcoes):
             self.lista_alimentos = Treeview(self.janela_cliente, height = 10,column=("col1", "col2"))
             self.lista_alimentos.heading("#0", text="")
             self.lista_alimentos.heading("#1", text="Alimento")
-            self.lista_alimentos.heading("#2", text="Calorias")
+            self.lista_alimentos.heading("#2", text="Kcal")
             self.lista_alimentos.column("#0", width=0, stretch=NO)
-            self.lista_alimentos.column("#1", width=100, anchor=W)
-            self.lista_alimentos.column("#2", width=100)
+            self.lista_alimentos.column("#1", width=150, anchor=W)
+            self.lista_alimentos.column("#2", width=50)
             self.alimentos_scroll = Scrollbar(self.janela_cliente,orient="vertical")
             self.lista_alimentos.configure(yscroll=self.alimentos_scroll.set)
             self.lista_alimentos.bind("<ButtonRelease-1>", self.lista_calorias_click)
@@ -296,6 +323,8 @@ class App(funcoes):
             self.visualizar_label_altura.place(x=250, y=50)
             self.visualizar_label_peso.place(x=250, y=100)
             self.visualizar_label_imc.place(x=250, y=200)
+            self.visualizar_label_kcal_text.place(x=500, y=50)
+            self.visualizar_label_kcal.place(x=500, y=80)
             self.visualizar_db_imccliente.place(x=275, y=200)
             self.visualizar_db_nome.place(x=75, y=50)
             self.visualizar_db_email.place(x=75, y=100)
@@ -304,11 +333,14 @@ class App(funcoes):
             self.visualizar_db_peso.place(x=290, y=100)
             self.visualizar_db_sexo.place(x=75, y=200)
             self.visualizar_button_remover.place(x=250, y=250)
-            self.lista_button_add.place(x=530, y=150)
+            self.lista_button_add.place(x=500, y=150)
             self.lista_alimentos.place(x=660,y=50)
             self.alimentos_scroll.place(x=850,y=50, height = 225.5)
+
+
             self.inserir_vizualiza()
             self.inserir_alimentos()
+            
         else: 
             self.msg_remover = "Nem um cliente selecionado!"
             messagebox.showerror("Erro!", self.msg_remover)
