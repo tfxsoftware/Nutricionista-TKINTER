@@ -4,7 +4,6 @@ from tkinter import ttk
 from tkinter import messagebox
 import sqlite3
 
-root = Tk()
 
 ## BACKEND ##
       
@@ -148,11 +147,20 @@ class funcoes():
             self.visualizar_label_kcal['foreground']="red"
 
     def reseta_calorias(self):
-        pass
+        self.caloria_dieta = 0
+        self.visualizar_label_kcal['text'] = self.caloria_dieta
 
     def editar_cliente(self):
         pass
-    
+
+    def calcular_calorias_restantes(self):
+        self.nova_dieta = abs(self.caloria_dieta - 2500)
+        if self.caloria_dieta >=2500:
+            self.text = "Remover"
+        else:
+            self.text = "Adicionar"
+        self.visualizar_label_calculo['text']=self.text,str(self.nova_dieta)
+
     def inserir_alimentos(self):
         self.lista_alimentos.insert(parent='', index=0, values=('Café(50ml)','33'))
         self.lista_alimentos.insert(parent='', index=0, values=('Suco natural(240ml)','100'))
@@ -168,22 +176,16 @@ class funcoes():
         self.lista_alimentos.insert(parent='', index=0, values=('Pão frances(50g)','135'))
         self.lista_alimentos.insert(parent='', index=0, values=('Pizza(140g)','400'))
 
-
-
-
-        
-
-
 ## FRONTEND ##       
 
 class App(funcoes):
     def __init__(self):
-        self.root = root
+        self.root = Tk()
         self.principal_config()
         self.monta_tabela()
         self.select_lista()
         self.cliente_selecionado = ""
-        root.mainloop()
+        self.root.mainloop()
 
     def principal_config(self):
         self.root.title('Nutricionista app')
@@ -193,7 +195,7 @@ class App(funcoes):
         
         self.label_clientes = Label(self.root, text="CLIENTES")
         self.botao_adicionar = Button(self.root, text="Adicionar Cliente", command=self.cadastro_config)
-        self.botao_visualizar = Button(self.root, text="Vizualizar Cliente", command=self.pagina_cliente)
+        self.botao_visualizar = Button(self.root, text="Vizualizar Cliente", command=self.visualiza_config)
         self.botao_sair = Button(self.root, text="        Sair        ", command=self.root.destroy)
         self.lista_clientes = ttk.Treeview(self.root, height=10, column=("col1", "col2"))
         self.lista_clientes.heading("#0", text="")
@@ -214,9 +216,7 @@ class App(funcoes):
         self.lista_clientes.place(x=10, y=50)
         self.scroll_lista.place(x=596, y=50, height=225.5)
            
-    def cadastro_config(self):
-        
-        
+    def cadastro_config(self):      
         self.janela_cadastro = Toplevel()
         self.janela_cadastro.title('Cadastro de cliente')
         self.janela_cadastro.geometry("450x300")
@@ -245,7 +245,7 @@ class App(funcoes):
         self.cadastro_botao_limpar = Button(self.janela_cadastro, text="   Limpar   ", command=self.limpar_cadastro)
         self.cadastro_botao_sair = Button(self.janela_cadastro, text="    Voltar   ",command=self.janela_cadastro.destroy)
         self.SexoTipvar = StringVar(self.janela_cadastro)
-        self.SexoTipv = ( "Masculino", "Feminino ")
+        self.SexoTipv = ("Masculino", "Feminino ")
         self.SexoTipvar.set("Masculino")
         self.cadastro_drop_sexo = OptionMenu(self.janela_cadastro, self.SexoTipvar, *self.SexoTipv)
     
@@ -271,7 +271,7 @@ class App(funcoes):
         self.cadastro_botao_sair.place(x=375, y=260)
         self.cadastro_drop_sexo.place(x=75, y=200)
     
-    def pagina_cliente(self):
+    def visualiza_config(self):
         self.caloria_dieta = 0
         if self.cliente_selecionado != "":
             self.janela_cliente = Toplevel()
@@ -294,6 +294,7 @@ class App(funcoes):
             self.visualizar_label_imc = Label(self.janela_cliente, text="IMC: ")
             self.visualizar_label_kcal_text = Label(self.janela_cliente, text="Calorias(Kcal):")
             self.visualizar_label_kcal = Label(self.janela_cliente, text="0", foreground="green")
+            self.visualizar_label_calculo = Label(self.janela_cliente, text="teste")
             self.visualizar_db_imccliente = Label(self.janela_cliente, text="", foreground="black")
             self.visualizar_db_nome = Label(self.janela_cliente, text="")
             self.visualizar_db_email = Label(self.janela_cliente, text="")
@@ -301,8 +302,10 @@ class App(funcoes):
             self.visualizar_db_altura = Label(self.janela_cliente, text="")
             self.visualizar_db_peso = Label(self.janela_cliente, text="")
             self.visualizar_db_sexo = Label(self.janela_cliente, text="")
+            self.visualizar_button_reset = Button(self.janela_cliente, text="Limpar selecionado", width=20, command=self.reseta_calorias)
             self.visualizar_button_remover = Button(self.janela_cliente, text="Remover Cliente", command=self.deletar_paciente)
-            self.lista_button_add = Button(self.janela_cliente, text='Adicionar Selecionado', command = self.calcula_calorias)
+            self.visualizar_button_calcula = Button(self.janela_cliente, text="Calcular dieta", width=20, command=self.calcular_calorias_restantes)
+            self.lista_button_add = Button(self.janela_cliente, text='Adicionar selecionado', width=20, command = self.calcula_calorias)
             self.lista_alimentos = Treeview(self.janela_cliente, height = 10,column=("col1", "col2"))
             self.lista_alimentos.heading("#0", text="")
             self.lista_alimentos.heading("#1", text="Alimento")
@@ -325,6 +328,7 @@ class App(funcoes):
             self.visualizar_label_imc.place(x=250, y=200)
             self.visualizar_label_kcal_text.place(x=500, y=50)
             self.visualizar_label_kcal.place(x=500, y=80)
+            self.visualizar_label_calculo.place(x=500, y=250)
             self.visualizar_db_imccliente.place(x=275, y=200)
             self.visualizar_db_nome.place(x=75, y=50)
             self.visualizar_db_email.place(x=75, y=100)
@@ -334,8 +338,11 @@ class App(funcoes):
             self.visualizar_db_sexo.place(x=75, y=200)
             self.visualizar_button_remover.place(x=250, y=250)
             self.lista_button_add.place(x=500, y=150)
+            self.visualizar_button_reset.place(x=500, y=180)
+            self.visualizar_button_calcula.place(x=500,y=210)
             self.lista_alimentos.place(x=660,y=50)
             self.alimentos_scroll.place(x=850,y=50, height = 225.5)
+            
 
 
             self.inserir_vizualiza()
