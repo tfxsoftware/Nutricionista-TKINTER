@@ -50,22 +50,25 @@ class funcoes():
             self.msg = "Preencha todos os campos e calcule o IMC!"
             messagebox.showerror("Erro!", self.msg)
         else:
-            self.nome_bd = self.cadastro_entry_nome.get()
-            self.email_bd = self.cadastro_entry_email.get()
-            self.telefone_bd = self.cadastro_entry_telefone.get()
-            self.peso_bd = self.cadastro_entry_peso.get()
-            self.altura_bd = self.cadastro_entry_altura.get()
-            self.imc_bd = self.imc
-            self.sexo_bd = self.cadastro_drop_sexo['text']
-            self.conecta_bd()
-            self.cursor.execute(""" INSERT INTO pacientes (nome, email, telefone, peso, altura, imc, sexo)
-                VALUES(?,?,?,?,?,?,?)""",(self.nome_bd, self.email_bd, self.telefone_bd, self.peso_bd, self.altura_bd, self.imc_bd, self.sexo_bd))
-            self.conn.commit()
-            self.desconecta_bd()
-            self.limpar_cadastro()
-            self.msg = "Paciente cadastrado com sucesso!"
-            messagebox.showinfo("Sucesso!", self.msg)
-            self.select_lista()
+            try:
+                self.nome_bd = self.cadastro_entry_nome.get()
+                self.email_bd = self.cadastro_entry_email.get()
+                self.telefone_bd = self.cadastro_entry_telefone.get()
+                self.peso_bd = self.cadastro_entry_peso.get()
+                self.altura_bd = self.cadastro_entry_altura.get()
+                self.imc_bd = self.imc
+                self.sexo_bd = self.cadastro_drop_sexo['text']
+                self.conecta_bd()
+                self.cursor.execute(""" INSERT INTO pacientes (nome, email, telefone, peso, altura, imc, sexo)
+                    VALUES(?,?,?,?,?,?,?)""",(self.nome_bd, self.email_bd, self.telefone_bd, self.peso_bd, self.altura_bd, self.imc_bd, self.sexo_bd))
+                self.conn.commit()
+                self.desconecta_bd()
+                self.limpar_cadastro()
+                self.msg = "Paciente cadastrado com sucesso!"
+                messagebox.showinfo("Sucesso!", self.msg)
+                self.select_lista()
+            except:
+                messagebox.showinfo("Erro!", "Email já registrado!")
     
     def conecta_bd(self):
         self.conn = sqlite3.connect("pacientes.db")
