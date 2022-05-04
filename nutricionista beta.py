@@ -179,6 +179,7 @@ class funcoes():
         self.lista_alimentos.insert(parent='', index=11, values=('Tomate(100g)','20'))
         self.lista_alimentos.insert(parent='', index=12, values=('Pão frances(50g)','135'))
         self.lista_alimentos.insert(parent='', index=13, values=('Pizza(140g)','400'))
+        self.lista_alimentos.insert(parent='', index=14, values=('Frango frito(100g)','400'))
 
 ## FRONTEND ##       
 
