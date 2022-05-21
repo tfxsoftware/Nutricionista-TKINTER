@@ -241,6 +241,7 @@ class App(funcoes):
         self.root.resizable(False, False)
         self.root.configure()
         self.root_janela_menu = PhotoImage(file="nutricionista_app/imagem menu.png")
+        self.root.iconbitmap('nutricionista_app\icon_nutri.ico')
 
 
         # WIDGETS
@@ -279,6 +280,7 @@ class App(funcoes):
         self.janela_cadastro.grab_set()
         self.janela_cadastro.config(background="#58af9c")
         self.bg_janela_cadastro = PhotoImage(file="nutricionista_app/imagem cadastro.png")
+        self.janela_cadastro.iconbitmap('nutricionista_app\icon_nutri.ico')
 
 
         # WIDGETS
@@ -341,6 +343,7 @@ class App(funcoes):
             self.janela_paciente.focus_force()
             self.janela_paciente.grab_set()
             self.bg_janela_paciente = PhotoImage(file="nutricionista_app/imagem paciente.png")
+            self.janela_paciente.iconbitmap('nutricionista_app\icon_nutri.ico')
 
             # WIDGETS
             self.imagem_janela_paciente = Label(self.janela_paciente, image=self.bg_janela_paciente)
