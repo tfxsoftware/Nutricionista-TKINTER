@@ -240,7 +240,7 @@ class App(funcoes):
         self.root.geometry("625x350")
         self.root.resizable(False, False)
         self.root.configure()
-        self.root_janela_menu = PhotoImage(file="imagem menu.png")
+        self.root_janela_menu = PhotoImage(file="nutricionista_app/imagem menu.png")
 
 
         # WIDGETS
@@ -278,7 +278,7 @@ class App(funcoes):
         self.janela_cadastro.focus_force()
         self.janela_cadastro.grab_set()
         self.janela_cadastro.config(background="#58af9c")
-        self.bg_janela_cadastro = PhotoImage(file="imagem cadastro.png")
+        self.bg_janela_cadastro = PhotoImage(file="nutricionista_app/imagem cadastro.png")
 
 
         # WIDGETS
@@ -340,7 +340,7 @@ class App(funcoes):
             self.janela_paciente.transient(self.root)
             self.janela_paciente.focus_force()
             self.janela_paciente.grab_set()
-            self.bg_janela_paciente = PhotoImage(file="imagem paciente.png")
+            self.bg_janela_paciente = PhotoImage(file="nutricionista_app/imagem paciente.png")
 
             # WIDGETS
             self.imagem_janela_paciente = Label(self.janela_paciente, image=self.bg_janela_paciente)
